@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOTORCARE LK - My Secure Reports</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Secure Login Modal */
+        .login-prompt {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 5000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-form-container h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-form-container h2::before {
+            content: "🔒";
+            margin-right: 10px;
+        }
+
+        .security-info {
+            background: linear-gradient(135deg, #e3f2fd, #f8f9fa);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #1976d2;
+            font-size: 14px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .security-info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .login-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            color: #667eea;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo::before {
+            content: "🛡️";
+            margin-right: 10px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            background: #f0f7ff;
+            padding: 8px 15px;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+
+        .user-info::before {
+            content: "";
+            margin-right: 8px;
+        }
+
+        .user-name {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .header-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .switch-user-btn {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .logout-btn {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .header-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 100px 0 20px 20px;
+            min-height: 100vh;
+        }
+
+        .user-panel {
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .user-panel h2 {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .user-panel h2::before {
+            content: "";
+            margin-right: 10px;
+        }
+
+        .user-panel p {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            margin: 2px 0;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 10px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-link::before {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .nav-link.dashboard::before { content: ""; }
+        .nav-link.my-reports::before { content: ""; }
+        .nav-link.report-history::before { content: ""; }
+        .nav-link.profile::before { content: ""; }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 100px 30px 30px 30px;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .content-header h1 {
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+        }
+
+        .content-header h1::before {
+            content: "";
+            margin-right: 15px;
+        }
+
+        .refresh-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .refresh-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Reports Container */
+        .reports-container {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .reports-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .reports-title {
+            color: #333;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+        }
+
+        .reports-title::before {
+            content: "";
+            margin-right: 10px;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Report Cards Grid */
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .report-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .report-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+        .report-card.favorite {
+            border-color: #f5576c;
+        }
+
+        .report-card.favorite::before {
+            background: linear-gradient(45deg, #f5576c, #f093fb);
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .report-info {
+            flex: 1;
+        }
+
+        .report-year {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .favorite-icon {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-size: 16px;
+            color: #f5576c;
+            display: none;
+        }
+
+        .report-card.favorite .favorite-icon {
+            display: block;
+        }
+
+        .customer-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin: 8px 0 4px 0;
+        }
+
+        .report-date {
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            align-items: center;
+        }
+
+        .report-date::before {
+            content: "📅";
+            margin-right: 5px;
+        }
+
+        .report-details {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .detail-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .amount-highlight {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-info {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Chart Modal */
+        .chart-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .chart-modal.visible {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-modal-content {
+            background: white;
+            margin: 20px;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .chart-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .chart-modal-title {
+            color: #333;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .chart-modal-title::before {
+            content: "";
+            margin-right: 10px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .chart-container {
+            margin: 20px 0;
+        }
+
+        #reportChart {
+            width: 100%;
+            height: 400px;
+            border-radius: 8px;
+        }
+
+        .chart-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .chart-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state::before {
+            content: "";
+            font-size: 48px;
+            display: block;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        /* Stats Overview */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-overview-card {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-overview-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-text {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Success/Error Messages */
+        .success-message, .error-message {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hide/Show Sections */
+        .dashboard-section,
+        .my-reports-section,
+        .report-history-section,
+        .profile-section {
+            display: none;
+        }
+
+        .dashboard-section.active,
+        .my-reports-section.active,
+        .report-history-section.active,
+        .profile-section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<!-- Login Prompt (initially hidden) -->
+<div id="loginPrompt" class="login-prompt" style="display: none;">
+    <div class="login-form-container">
+        <h2>Secure Access Required</h2>
+        <div class="security-info">
+            <strong>Privacy Protected</strong>
+            Login with your website credentials to view your private insurance reports securely.
+        </div>
+        <form id="loginForm">
+            <input type="email" class="login-input" id="loginEmail" placeholder="Email Address" required>
+            <input type="password" class="login-input" id="loginPassword" placeholder="Password" required>
+            <button type="submit" class="login-btn" id="loginBtn">🔓 Access My Secure Reports</button>
+        </form>
+    </div>
+</div>
+
+<!-- Header -->
+<div class="header">
+    <div class="logo">MOTORCARE LK</div>
+    <div class="header-buttons">
+        <div class="user-info">
+            <span class="user-name" id="userName">Loading...</span>
+        </div>
+        <button class="header-btn switch-user-btn" onclick="switchUser()"> Switch User</button>
+        <button class="header-btn logout-btn" onclick="navigateToPage('interface.html')">Secure Logout
+            <script>
+                function navigateToPage(page) {
+                    window.location.href = page;
+                }
+            </script>
+        </button>
+    </div>
+</div>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="user-panel">
+        <h2>Secure Portal</h2>
+        <p>My Private Insurance Reports</p>
+        <p id="userNicDisplay" style="font-size: 12px; margin-top: 5px; opacity: 0.7;"></p>
+    </div>
+    <ul class="nav-menu">
+        <li class="nav-item">
+            <a href="#" class="nav-link dashboard" onclick="showDashboard()">Dashboard</a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link my-reports active" onclick="showMyReports()">My Reports</a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link report-history" onclick="showReportHistory()">Report History</a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link profile" onclick="showProfile()">Profile Settings</a>
+        </li>
+    </ul>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Dashboard Section -->
+    <div id="dashboardSection" class="dashboard-section">
+        <div class="content-header">
+            <h1>Dashboard Overview</h1>
+        </div>
+
+        <div class="stats-overview">
+            <div class="stat-overview-card">
+                <span class="stat-icon"></span>
+                <div class="stat-number" id="totalReportsCount">0</div>
+                <div class="stat-text">Total Reports</div>
+            </div>
+            <div class="stat-overview-card">
+                <span class="stat-icon"></span>
+                <div class="stat-number" id="totalPaymentsAmount">LKR 0</div>
+                <div class="stat-text">Total Payments</div>
+            </div>
+            <div class="stat-overview-card">
+                <span class="stat-icon"></span>
+                <div class="stat-number" id="favoriteReportsCount">0</div>
+                <div class="stat-text">Favorite Reports</div>
+            </div>
+            <div class="stat-overview-card">
+                <span class="stat-icon"></span>
+                <div class="stat-number" id="recentReportsCount">0</div>
+                <div class="stat-text">Recent Reports</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Reports Section -->
+    <div id="myReportsSection" class="my-reports-section active">
+        <div class="content-header">
+            <h1>My Secure Insurance Reports</h1>
+            <button class="refresh-btn" onclick="loadSecureUserReports()">
+                 Refresh Reports
+            </button>
+        </div>
+
+        <!-- Success Message -->
+        <div id="successMessage" class="success-message">
+            Report loaded successfully!
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message">
+            Failed to load reports!
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading your secure reports...</p>
+        </div>
+
+        <!-- Reports Container -->
+        <div class="reports-container">
+            <div class="reports-header">
+                <h2 class="reports-title">Your Private Monthly Reports</h2>
+                <div class="filter-container">
+                    <select class="filter-select" id="yearFilter" onchange="filterReportsByYear()">
+                        <option value="">All Years</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                    </select>
+                    <select class="filter-select" id="statusFilter" onchange="filterReportsByStatus()">
+                        <option value="">All Reports</option>
+                        <option value="recent">Recent</option>
+                        <option value="favorites">Favorites</option>
+                        <option value="older">Older</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Reports Grid -->
+            <div id="reportsGrid" class="reports-grid">
+                <!-- Reports will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Report History Section -->
+    <div id="reportHistorySection" class="report-history-section">
+        <div class="content-header">
+            <h1>Report History</h1>
+        </div>
+
+        <div class="reports-container">
+            <div class="reports-header">
+                <h2 class="reports-title">All Time Reports</h2>
+            </div>
+            <div id="historyGrid" class="reports-grid">
+                <!-- Historical reports will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Section -->
+    <div id="profileSection" class="profile-section">
+        <div class="content-header">
+            <h1>Profile Settings</h1>
+        </div>
+
+        <div class="reports-container">
+            <h2 class="reports-title">Secure User Information</h2>
+            <div style="padding: 20px; color: #666;">
+                <p><strong>Name:</strong> <span id="profileName">-</span></p>
+                <p><strong>NIC:</strong> <span id="profileNIC">-</span></p>
+                <p><strong>Phone:</strong> <span id="profilePhone">-</span></p>
+                <p><strong>Email:</strong> <span id="profileEmail">-</span></p>
+                <p><strong>Total Reports:</strong> <span id="profileTotalReports">-</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart Modal -->
+<div id="chartModal" class="chart-modal">
+    <div class="chart-modal-content">
+        <div class="chart-modal-header">
+            <h2 class="chart-modal-title" id="modalTitle">Payment Pie Chart</h2>
+            <button class="close-modal" onclick="closeChartModal()">&times;</button>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="reportChart"></canvas>
+        </div>
+
+        <div class="chart-info">
+            <div class="chart-stats" id="chartStats">
+                <!-- Chart statistics will be populated here -->
+            </div>
+        </div>
+    </div>
+</div>
+//pie chart
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Enhanced secure variables
+    let currentUser = null;
+    let userCredentials = null;
+    let userReports = [];
+    let allReports = [];
+    let reportChart = null;
+    let isAuthenticated = false;
+
+    // Secure API Base URL
+    const SECURE_API_BASE_URL = 'http://localhost:8080/api/user-reports/secure';
+
+    // Month colors for pie charts
+    const monthColors = {
+        'Jan': 'rgba(255, 99, 132, 0.8)',
+        'Feb': 'rgba(54, 162, 235, 0.8)',
+        'Mar': 'rgba(255, 205, 86, 0.8)',
+        'Apr': 'rgba(75, 192, 192, 0.8)',
+        'May': 'rgba(153, 102, 255, 0.8)',
+        'Jun': 'rgba(255, 159, 64, 0.8)',
+        'Jul': 'rgba(199, 199, 199, 0.8)',
+        'Aug': 'rgba(83, 102, 255, 0.8)',
+        'Sep': 'rgba(255, 99, 255, 0.8)',
+        'Oct': 'rgba(99, 255, 132, 0.8)',
+        'Nov': 'rgba(255, 180, 99, 0.8)',
+        'Dec': 'rgba(180, 99, 255, 0.8)'
+    };
+
+    // Initialize with security check
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log(' Initializing secure user dashboard...');
+        checkAuthentication();
+    });
+
+    // Check if user is authenticated
+    function checkAuthentication() {
+        const savedCredentials = sessionStorage.getItem('userCredentials');
+
+        if (savedCredentials) {
+            try {
+                userCredentials = JSON.parse(savedCredentials);
+                authenticateAndLoadReports();
+            } catch (error) {
+                console.error('Invalid saved credentials');
+                showLoginPrompt();
+            }
+        } else {
+            showLoginPrompt();
+        }
+    }
+
+    // Show login prompt
+    function showLoginPrompt() {
+        document.getElementById('loginPrompt').style.display = 'flex';
+        isAuthenticated = false;
+    }
+
+    // Hide login prompt
+    function hideLoginPrompt() {
+        document.getElementById('loginPrompt').style.display = 'none';
+        isAuthenticated = true;
+    }
+
+    // Handle login form submission
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        await performAuthentication();
+    });
+
+    // Perform secure authentication
+    async function performAuthentication() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+
+        if (!email || !password) {
+            showError('Please enter both email and password');
+            return;
+        }
+
+        const loginBtn = document.getElementById('loginBtn');
+        loginBtn.disabled = true;
+        loginBtn.textContent = 'Authenticating...';
+
+        try {
+            console.log(' Authenticating user:', email);
+
+            // First authenticate with your user system
+            const authResponse = await fetch('http://localhost:8080/api/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
+
+            const authResult = await authResponse.json();
+
+            if (authResult.success && authResult.user) {
+                // Store secure credentials
+                userCredentials = {
+                    email: email,
+                    password: password,
+                    nic: authResult.user.nic
+                };
+
+                currentUser = authResult.user;
+
+                // Save to session storage (cleared on browser close)
+                sessionStorage.setItem('userCredentials', JSON.stringify(userCredentials));
+
+                // Update UI
+                document.getElementById('userName').textContent = currentUser.name;
+
+                hideLoginPrompt();
+                initializeUserInterface();
+                loadSecureUserReports();
+
+                showSuccess(` Welcome back, ${currentUser.name}! Secure access granted.`);
+
+            } else {
+                throw new Error(authResult.message || 'Invalid email or password');
+            }
+
+        } catch (error) {
+            console.error(' Authentication failed:', error);
+            showError('Authentication failed: ' + error.message);
+        } finally {
+            loginBtn.disabled = false;
+            loginBtn.textContent = ' Access My Secure Reports';
+        }
+    }
+
+    // Authenticate and load reports (for returning users)
+    async function authenticateAndLoadReports() {
+        try {
+            const authResponse = await fetch('http://localhost:8080/api/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: userCredentials.email,
+                    password: userCredentials.password
+                })
+            });
+
+            const authResult = await authResponse.json();
+
+            if (authResult.success && authResult.user) {
+                currentUser = authResult.user;
+                document.getElementById('userName').textContent = currentUser.name;
+
+                hideLoginPrompt();
+                initializeUserInterface();
+                loadSecureUserReports();
+
+            } else {
+                throw new Error('Session expired');
+            }
+
+        } catch (error) {
+            console.error('Session authentication failed:', error);
+            showLoginPrompt();
+        }
+    }
+
+    // Initialize user interface
+    function initializeUserInterface() {
+        if (!currentUser) return;
+
+        document.getElementById('userName').textContent = currentUser.name;
+        document.getElementById('userNicDisplay').textContent = `Secure ID: ${currentUser.nic}`;
+
+        // Update profile section
+        document.getElementById('profileName').textContent = currentUser.name;
+        document.getElementById('profileNIC').textContent = currentUser.nic;
+        document.getElementById('profilePhone').textContent = currentUser.telephone;
+        document.getElementById('profileEmail').textContent = currentUser.email || 'Not provided';
+
+        showMyReports();
+    }
+
+    // Navigation Functions
+    function showDashboard() {
+        updateNavigation('dashboard');
+        hideAllSections();
+        document.getElementById('dashboardSection').classList.add('active');
+        loadDashboardStats();
+    }
+
+    function showMyReports() {
+        updateNavigation('my-reports');
+        hideAllSections();
+        document.getElementById('myReportsSection').classList.add('active');
+        loadSecureUserReports();
+    }
+
+    function showReportHistory() {
+        updateNavigation('report-history');
+        hideAllSections();
+        document.getElementById('reportHistorySection').classList.add('active');
+        loadReportHistory();
+    }
+
+    function showProfile() {
+        updateNavigation('profile');
+        hideAllSections();
+        document.getElementById('profileSection').classList.add('active');
+    }
+
+    function hideAllSections() {
+        document.getElementById('dashboardSection').classList.remove('active');
+        document.getElementById('myReportsSection').classList.remove('active');
+        document.getElementById('reportHistorySection').classList.remove('active');
+        document.getElementById('profileSection').classList.remove('active');
+    }
+
+    function updateNavigation(activeTab) {
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+        });
+        document.querySelector(`.nav-link.${activeTab}`).classList.add('active');
+    }
+
+    // Load secure user reports
+    async function loadSecureUserReports() {
+        if (!isAuthenticated || !userCredentials) {
+            showLoginPrompt();
+            return;
+        }
+
+        showLoading();
+
+        try {
+            console.log(' Loading secure reports for:', userCredentials.email);
+
+            const response = await fetch(`${SECURE_API_BASE_URL}/my-reports`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(userCredentials)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                userReports = result.data || [];
+                allReports = [...userReports];
+
+                console.log(' Secure reports loaded:', userReports.length);
+                displayUserReports(userReports);
+                updateDashboardStatsFromReports();
+
+                if (userReports.length > 0) {
+                    showSuccess(`Loaded ${userReports.length} private reports securely`);
+                }
+            } else {
+                if (result.message && result.message.includes('Access denied')) {
+                    throw new Error('Privacy violation detected - access blocked');
+                }
+                throw new Error(result.message || 'Failed to load secure reports');
+            }
+
+        } catch (error) {
+            console.error(' Failed to load secure reports:', error);
+            showError('Failed to load your reports: ' + error.message);
+
+            if (error.message.includes('Authentication') || error.message.includes('Access denied')) {
+                secureLogout();
+            }
+        } finally {
+            hideLoading();
+        }
+    }
+
+    // Display user reports
+    function displayUserReports(reports) {
+        const reportsGrid = document.getElementById('reportsGrid');
+
+        if (reports.length === 0) {
+            reportsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <h3> No Private Reports Found</h3>
+                        <p>You don't have any insurance reports yet.</p>
+                        <p>Reports will appear here when admin creates them for your account.</p>
+                    </div>
+                `;
+            return;
+        }
+
+        reportsGrid.innerHTML = reports.map(report => `
+                <div class="report-card ${report.isFavorite ? 'favorite' : ''}">
+                    <div class="report-header">
+                        <div class="report-info">
+                            <div class="report-year">${report.reportYear}
+                                <span class="favorite-icon"></span>
+                            </div>
+                            <div class="customer-name">${report.customerName}</div>
+                            <div class="report-date">Created: ${formatDate(report.createdDate)}</div>
+                        </div>
+                    </div>
+
+                    <div class="report-details">
+                        <div class="detail-row">
+                            <span class="detail-label">NIC:</span>
+                            <span class="detail-value">${report.customerNIC}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Phone:</span>
+                            <span class="detail-value">${report.customerPhone}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Paid Months:</span>
+                            <span class="detail-value">${report.paidMonths} months</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Total Amount:</span>
+                            <span class="detail-value amount-highlight">LKR ${report.totalAmount?.toLocaleString()}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Average/Month:</span>
+                            <span class="detail-value">LKR ${report.averageAmount?.toLocaleString()}</span>
+                        </div>
+                    </div>
+
+                    <div class="report-actions">
+                        <button class="btn btn-primary" onclick="viewSecureReportChart(${report.id})">
+                             View Pie Chart
+                        </button>
+                        <button class="btn btn-warning" onclick="toggleSecureFavorite(${report.id})">
+                            ${report.isFavorite ? ' Unfavorite' : ' Favorite'}
+                        </button>
+                        <button class="btn btn-info" onclick="viewSecureReportDetails(${report.id})">
+                             View Details
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    // View secure report chart
+    function viewSecureReportChart(reportId) {
+        const report = userReports.find(r => r.id === reportId);
+        if (!report || !report.paymentData || report.paymentData.length === 0) {
+            showError('No payment data available for pie chart');
+            return;
+        }
+
+        // Mark as viewed
+        markSecureReportAsViewed(reportId);
+
+        document.getElementById('modalTitle').textContent = `${report.customerName} - ${report.reportYear} Payment Chart`;
+
+        // Show modal
+        document.getElementById('chartModal').classList.add('visible');
+
+        // Create pie chart
+        createPaymentPieChart(report);
+
+        // Update chart statistics
+        updateChartStatistics(report);
+    }
+
+    // Create pie chart
+    function createPaymentPieChart(report) {
+        const ctx = document.getElementById('reportChart').getContext('2d');
+
+        // Destroy existing chart if any
+        if (reportChart) {
+            reportChart.destroy();
+        }
+
+        const labels = report.paymentData.map(payment => payment.month);
+        const amounts = report.paymentData.map(payment => payment.amount);
+        const colors = report.paymentData.map(payment => monthColors[payment.month]);
+
+        reportChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Monthly Payments (LKR)',
+                    data: amounts,
+                    backgroundColor: colors,
+                    borderColor: colors.map(color => color.replace('0.8', '1')),
+                    borderWidth: 2,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 15,
+                            padding: 15,
+                            font: {
+                                size: 12
+                            },
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return `${context.label}: LKR ${context.parsed.toLocaleString()} (${percentage}%)`;
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    animateRotate: true,
+                    animateScale: true,
+                    duration: 1000
+                }
+            }
+        });
+    }
+
+    // Update chart statistics
+    function updateChartStatistics(report) {
+        const statsContainer = document.getElementById('chartStats');
+
+        const totalAmount = report.totalAmount;
+        const averageAmount = report.averageAmount;
+        const paidMonths = report.paidMonths;
+        const highestPayment = Math.max(...report.paymentData.map(p => p.amount));
+
+        statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">LKR ${totalAmount.toLocaleString()}</div>
+                    <div class="stat-label">Total Paid</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">LKR ${averageAmount.toLocaleString()}</div>
+                    <div class="stat-label">Average/Month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${paidMonths}</div>
+                    <div class="stat-label">Paid Months</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">LKR ${highestPayment.toLocaleString()}</div>
+                    <div class="stat-label">Highest Payment</div>
+                </div>
+            `;
+    }
+
+    // Toggle secure favorite
+    async function toggleSecureFavorite(reportId) {
+        if (!isAuthenticated || !userCredentials) {
+            showLoginPrompt();
+            return;
+        }
+
+        const report = userReports.find(r => r.id === reportId);
+        if (!report) return;
+
+        try {
+            const response = await fetch(`${SECURE_API_BASE_URL}/${reportId}/favorite`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userCredentials)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                report.isFavorite = !report.isFavorite;
+                displayUserReports(userReports);
+                updateDashboardStatsFromReports();
+                showSuccess(` Report ${report.isFavorite ? 'added to' : 'removed from'} favorites securely!`);
+            } else {
+                throw new Error(result.message || 'Access denied');
+            }
+
+        } catch (error) {
+            console.error(' Failed to toggle favorite:', error);
+            showError('Access denied: ' + error.message);
+        }
+    }
+
+    // View secure report details
+    function viewSecureReportDetails(reportId) {
+        const report = userReports.find(r => r.id === reportId);
+        if (!report) return;
+
+        // Mark as viewed
+        markSecureReportAsViewed(reportId);
+
+        const claimDate = report.claimDate ? formatDate(report.claimDate) : 'No claim date';
+        const paymentDetails = report.paymentData.map(p => `${p.month}: LKR ${p.amount.toLocaleString()}`).join('\n');
+
+        alert(` Private Report Details:
+
+Customer: ${report.customerName}
+NIC: ${report.customerNIC}
+Phone: ${report.customerPhone}
+Year: ${report.reportYear}
+
+Applied Policies:
+${report.appliedPolicies || 'No policies listed'}
+
+Claims Information:
+${report.claimsInfo || 'No claims information'}
+
+Claim Date: ${claimDate}
+
+Payment Summary:
+- Total Months Paid: ${report.paidMonths}
+- Total Amount: LKR ${report.totalAmount?.toLocaleString()}
+- Average per Month: LKR ${report.averageAmount?.toLocaleString()}
+
+Monthly Payments:
+${paymentDetails}
+
+Created: ${formatDate(report.createdDate)}
+${report.viewedDate ? `Last Viewed: ${formatDate(report.viewedDate)}` : ''}
+            `);
+    }
+
+    // Mark secure report as viewed
+    async function markSecureReportAsViewed(reportId) {
+        if (!userCredentials) return;
+
+        try {
+            await fetch(`${SECURE_API_BASE_URL}/${reportId}/viewed`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userCredentials)
+            });
+        } catch (error) {
+            console.error('Failed to mark as viewed:', error);
+        }
+    }
+
+    // Update dashboard stats from reports
+    function updateDashboardStatsFromReports() {
+        if (userReports.length === 0) return;
+
+        const totalReports = userReports.length;
+        const totalPayments = userReports.reduce((sum, report) => sum + (report.totalAmount || 0), 0);
+        const favoriteReports = userReports.filter(report => report.isFavorite).length;
+
+        // Recent reports (last 30 days)
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        const recentReports = userReports.filter(report =>
+            new Date(report.createdDate) > thirtyDaysAgo
+        ).length;
+
+        // Update dashboard
+        document.getElementById('totalReportsCount').textContent = totalReports;
+        document.getElementById('totalPaymentsAmount').textContent = `LKR ${totalPayments.toLocaleString()}`;
+        document.getElementById('favoriteReportsCount').textContent = favoriteReports;
+        document.getElementById('recentReportsCount').textContent = recentReports;
+
+        // Update profile
+        document.getElementById('profileTotalReports').textContent = totalReports;
+    }
+
+    // Load dashboard stats
+    function loadDashboardStats() {
+        updateDashboardStatsFromReports();
+    }
+
+    // Load report history
+    function loadReportHistory() {
+        const historyGrid = document.getElementById('historyGrid');
+        historyGrid.innerHTML = userReports.map(report => `
+                <div class="report-card">
+                    <div class="report-header">
+                        <div class="report-info">
+                            <div class="report-year">${report.reportYear}</div>
+                            <div class="customer-name">${report.customerName}</div>
+                            <div class="report-date">Created: ${formatDate(report.createdDate)}</div>
+                        </div>
+                    </div>
+                    <div class="report-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Total Amount:</span>
+                            <span class="detail-value amount-highlight">LKR ${report.totalAmount?.toLocaleString()}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Status:</span>
+                            <span class="detail-value">${report.viewedDate ? 'Viewed' : 'New'}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    // Filter functions
+    function filterReportsByYear() {
+        const selectedYear = document.getElementById('yearFilter').value;
+        if (!selectedYear) {
+            displayUserReports(userReports);
+            return;
+        }
+
+        const filteredReports = userReports.filter(report =>
+            report.reportYear.toString() === selectedYear
+        );
+        displayUserReports(filteredReports);
+    }
+
+    function filterReportsByStatus() {
+        const selectedStatus = document.getElementById('statusFilter').value;
+        if (!selectedStatus) {
+            displayUserReports(userReports);
+            return;
+        }
+
+        let filteredReports = [];
+
+        switch (selectedStatus) {
+            case 'recent':
+                const thirtyDaysAgo = new Date();
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                filteredReports = userReports.filter(report =>
+                    new Date(report.createdDate) > thirtyDaysAgo
+                );
+                break;
+            case 'favorites':
+                filteredReports = userReports.filter(report => report.isFavorite);
+                break;
+            case 'older':
+                const sixMonthsAgo = new Date();
+                sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+                filteredReports = userReports.filter(report =>
+                    new Date(report.createdDate) < sixMonthsAgo
+                );
+                break;
+            default:
+                filteredReports = userReports;
+        }
+
+        displayUserReports(filteredReports);
+    }
+
+    // Switch user (show login again)
+    function switchUser() {
+        if (confirm('Switch to a different user? You will need to login again.')) {
+            sessionStorage.removeItem('userCredentials');
+            currentUser = null;
+            userCredentials = null;
+            userReports = [];
+            allReports = [];
+            isAuthenticated = false;
+
+            document.getElementById('loginForm').reset();
+            showLoginPrompt();
+
+            showSuccess('Ready for new user login');
+        }
+    }
+
+    // Secure logout
+    function secureLogout() {
+        if (confirm('Are you sure you want to logout securely? You will need to re-authenticate.')) {
+            // Clear all secure data
+            sessionStorage.removeItem('userCredentials');
+            currentUser = null;
+            userCredentials = null;
+            userReports = [];
+            allReports = [];
+            isAuthenticated = false;
+
+            // Reset forms
+            document.getElementById('loginForm').reset();
+
+            // Show login prompt
+            showLoginPrompt();
+
+            showSuccess(' Secure logout completed. All session data cleared.');
+        }
+    }
+
+    // Close chart modal
+    function closeChartModal() {
+        document.getElementById('chartModal').classList.remove('visible');
+        if (reportChart) {
+            reportChart.destroy();
+            reportChart = null;
+        }
+    }
+
+    // Utility functions
+    function formatDate(dateString) {
+        if (!dateString) return 'N/A';
+        return new Date(dateString).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    }
+
+    function showLoading() {
+        document.getElementById('loading').style.display = 'block';
+    }
+
+    function hideLoading() {
+        document.getElementById('loading').style.display = 'none';
+    }
+
+    function showSuccess(message) {
+        const successDiv = document.getElementById('successMessage');
+        successDiv.textContent = message;
+        successDiv.style.display = 'block';
+        document.getElementById('errorMessage').style.display = 'none';
+
+        setTimeout(() => {
+            successDiv.style.display = 'none';
+        }, 5000);
+    }
+
+    function showError(message) {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+        document.getElementById('successMessage').style.display = 'none';
+
+        setTimeout(() => {
+            errorDiv.style.display = 'none';
+        }, 6000);
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('chartModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeChartModal();
+        }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeChartModal();
+        }
+    });
+
+    // Auto-logout on page close
+    window.addEventListener('beforeunload', function() {
+        if (isAuthenticated) {
+            sessionStorage.removeItem('userCredentials');
+        }
+    });
+</script>
+</body>
+</html>

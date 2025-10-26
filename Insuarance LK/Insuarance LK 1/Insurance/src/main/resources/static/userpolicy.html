@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Policies - MotorCare LK</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f8f9fa;
+    }
+
+    /* Header Styles */
+    .header {
+      background: #fff;
+      padding: 1rem 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #4a69bd;
+    }
+
+    .logo::before {
+      content: "🛡️";
+      margin-right: 0.5rem;
+      color: #ff6b35;
+    }
+
+    .nav-menu {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    .nav-menu a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s;
+      cursor: pointer;
+    }
+
+    .nav-menu a:hover,
+    .nav-menu a.active {
+      color: #4a69bd;
+    }
+
+    /* Header Buttons - Styled like the image */
+    .auth-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border: 2px solid;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-dashboard {
+      background: white;
+      color: #4a69bd;
+      border-color: #4a69bd;
+    }
+
+    .btn-dashboard:hover {
+      background: #4a69bd;
+      color: white;
+    }
+
+    .btn-logout {
+      background: #ff6b35;
+      color: white;
+      border-color: #ff6b35;
+    }
+
+    .btn-logout:hover {
+      background: #e55a2b;
+      border-color: #e55a2b;
+    }
+
+    .btn-success {
+      background: #28a745;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #218838;
+    }
+
+    .btn-register {
+      background: #4a69bd;
+      color: white;
+    }
+
+    .btn-register:hover {
+      background: #3c5aa6;
+    }
+
+    /* Layout Styles */
+    .policy-layout {
+      display: flex;
+      min-height: calc(100vh - 80px);
+      margin-top: 80px;
+    }
+
+    /* Sidebar Styles */
+    .policy-sidebar {
+      width: 280px;
+      background: linear-gradient(135deg, #4a69bd, #1e3799);
+      color: white;
+      position: fixed;
+      height: calc(100vh - 80px);
+      overflow-y: auto;
+      z-index: 100;
+    }
+
+    .sidebar-header {
+      padding: 2rem 1.5rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .sidebar-header h3 {
+      color: #ff6b35;
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-nav {
+      padding: 1rem 0;
+    }
+
+    .sidebar-item {
+      display: block;
+      padding: 1rem 1.5rem;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: all 0.3s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .sidebar-item:hover,
+    .sidebar-item.active {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border-left: 4px solid #ff6b35;
+    }
+
+    /* Content Area */
+    .policy-content {
+      margin-left: 280px;
+      padding: 2rem;
+      flex: 1;
+      background: #f8f9fa;
+    }
+
+    /* Page Styles */
+    .policy-section {
+      display: none;
+    }
+
+    .policy-section.active {
+      display: block;
+    }
+
+    /* Policy Cards Grid */
+    .policies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .policy-card {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .policy-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+    }
+
+    .policy-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(135deg, #4a69bd, #1e3799);
+    }
+
+    .policy-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+
+
+    .policy-title {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #4a69bd;
+      margin: 0;
+    }
+
+    .policy-description {
+      color: #666;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .policy-benefits {
+      margin-bottom: 2rem;
+    }
+
+    .policy-benefits h4 {
+      color: #4a69bd;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .benefits-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .benefits-list li {
+      padding: 0.5rem 0;
+      color: #555;
+      display: flex;
+      align-items: center;
+    }
+
+    .benefits-list li::before {
+      content: "✅";
+      margin-right: 0.5rem;
+    }
+
+    .policy-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-apply {
+      background: linear-gradient(135deg, #4a69bd, #1e3799);
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .btn-apply:hover {
+      background: linear-gradient(135deg, #3c5aa6, #1a2e7a);
+      transform: translateY(-2px);
+    }
+
+    .btn-download {
+      background: #28a745;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .btn-download:hover {
+      background: #218838;
+      transform: translateY(-2px);
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .modal-header h2 {
+      color: #4a69bd;
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .close {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #666;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+
+    .close:hover {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #4a69bd;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      border: 2px solid #e1e8ed;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.3s;
+      font-family: inherit;
+      background: #f8f9fa;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #4a69bd;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(74, 105, 189, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #4a69bd;
+      font-size: 1.1rem;
+      z-index: 1;
+    }
+
+    .form-group.has-textarea .input-icon {
+      top: 3rem;
+      transform: none;
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, #4a69bd, #1e3799);
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 100%;
+      font-size: 1.1rem;
+    }
+
+    .btn-submit:hover {
+      background: linear-gradient(135deg, #3c5aa6, #1a2e7a);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(74, 105, 189, 0.3);
+    }
+
+    /* Alert Styles */
+    .alert {
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .alert.show {
+      display: flex;
+    }
+
+    .alert-success {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #10b981;
+    }
+
+    .alert-error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #ef4444;
+    }
+
+    .alert-warning {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #f59e0b;
+    }
+
+    /* Admin Styles */
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    /* Table Styles */
+    .table-container {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-top: 2rem;
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #e1e8ed;
+    }
+
+    th {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #4a69bd;
+    }
+
+    tr:hover {
+      background: #f8f9fa;
+    }
+
+    .status-badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-approved {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-rejected {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* Form Row */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* Page Introduction */
+    .page-intro {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: linear-gradient(135deg, #4a69bd, #1e3799);
+      color: white;
+      border-radius: 15px;
+      margin-bottom: 3rem;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .page-intro h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .page-intro p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .policy-layout {
+        flex-direction: column;
+      }
+
+      .policy-sidebar {
+        width: 100%;
+        position: relative;
+        height: auto;
+      }
+
+      .policy-content {
+        margin-left: 0;
+        padding: 1rem;
+      }
+
+      .policies-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-content {
+        margin: 1rem;
+        width: calc(100% - 2rem);
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .page-intro h1 {
+        font-size: 2rem;
+      }
+
+      .page-intro {
+        padding: 2rem 1rem;
+      }
+
+      .auth-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .btn {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- Header -->
+<header class="header">
+  <div class="nav-container">
+    <div class="logo">MOTORCARE LK</div>
+
+    <nav class="nav-menu">
+      <a href="#" class="nav-link active">POLICIES</a>
+      <a href="#" class="nav-link">ABOUT</a>
+      <a href="#" class="nav-link">CONTACT</a>
+    </nav>
+
+    <!-- Dashboard and Logout Buttons as shown in the image -->
+    <div class="auth-buttons">
+      <a href="userdashboard.html" class="btn btn-dashboard">Dashboard</a>
+      <button class="btn btn-logout" onclick="navigateToPage('interface.html')">
+         Logout
+        <script>
+          function navigateToPage(page) {
+            window.location.href = page;
+          }
+        </script>
+
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Policy Management Layout -->
+<div class="policy-layout">
+  <!-- Sidebar -->
+  <div class="policy-sidebar">
+    <div class="sidebar-header">
+      <h3> User Policies</h3>
+      <p>Browse & Apply</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="sidebar-item active" onclick="showPolicySection('browse-policies')">
+        Browse Policies
+      </button>
+      <button class="sidebar-item" onclick="showPolicySection('my-applications')">
+         My Applications
+      </button>
+    </nav>
+  </div>
+
+  <!-- Content Area -->
+  <div class="policy-content">
+    <div id="alertContainer" class="alert"></div>
+
+    <!-- Browse Policies Section -->
+    <div id="browse-policies" class="policy-section active">
+      <!-- Page Introduction -->
+      <div class="page-intro">
+        <h1>🛡️ Insurance Policies</h1>
+        <p>Protect your vehicle with our comprehensive insurance policies. Choose from our range of coverage options designed to meet your specific needs and budget.</p>
+      </div>
+
+      <div class="policies-grid" id="policiesGrid">
+        <!-- Policy cards will be loaded dynamically via API -->
+      </div>
+    </div>
+
+    <!-- My Applications Section -->
+    <div id="my-applications" class="policy-section">
+      <div class="admin-header">
+        <div>
+          <h2 style="color: #4a69bd; margin-bottom: 0.5rem;">My Policy Applications</h2>
+          <p style="color: #666;">Track the status of your submitted applications</p>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header">
+          <h3 style="color: #4a69bd; margin: 0;">Application History</h3>
+          <button class="btn btn-register" onclick="refreshApplications()">Refresh</button>
+        </div>
+
+        <table id="applicationsTable">
+          <thead>
+          <tr>
+            <th>Application ID</th>
+            <th>Policy Name</th>
+            <th>Vehicle Type</th>
+            <th>Application Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <!-- Applications will be loaded dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Policy Application Modal -->
+<div id="applicationModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modalTitle">Apply for Policy</h2>
+      <button class="close" onclick="closeModal('applicationModal')">&times;</button>
+    </div>
+
+    <div id="applicationAlert" class="alert"></div>
+
+    <form id="policyApplicationForm">
+      <div class="form-group">
+        <label for="applicantName"> Full Name</label>
+        <div class="input-icon"></div>
+        <input type="text" id="applicantName" required placeholder="Enter your full name">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="applicantAge"> Age</label>
+          <div class="input-icon"></div>
+          <input type="number" id="applicantAge" min="18" max="100" required placeholder="Age">
+        </div>
+        <div class="form-group">
+          <label for="applicantNic"> NIC Number</label>
+          <div class="input-icon"></div>
+          <input type="text" id="applicantNic" required placeholder="NIC Number">
+        </div>
+      </div>
+
+      <div class="form-group has-textarea">
+        <label for="applicantAddress">Address</label>
+        <div class="input-icon"></div>
+        <textarea id="applicantAddress" required placeholder="Enter your complete address"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="applicantPhone"> Telephone</label>
+          <div class="input-icon"></div>
+          <input type="tel" id="applicantPhone" required placeholder="Phone number">
+        </div>
+        <div class="form-group">
+          <label for="applicantEmail"> Email</label>
+          <div class="input-icon"></div>
+          <input type="email" id="applicantEmail" required placeholder="Email address">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="vehicleType"> Vehicle Type/Number</label>
+        <div class="input-icon"></div>
+        <input type="text" id="vehicleType" required placeholder="e.g., Car - ABC-1234">
+      </div>
+
+      <div class="form-group has-textarea">
+        <label for="additionalNotes"> Additional Notes</label>
+        <div class="input-icon"></div>
+        <textarea id="additionalNotes" placeholder="Any additional information or special requirements"></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit">
+        Submit Application
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- View Application Details Modal -->
+<div id="viewApplicationModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Application Details</h2>
+      <button class="close" onclick="closeModal('viewApplicationModal')">&times;</button>
+    </div>
+
+    <div id="applicationDetailsContent">
+      <!-- Application details will be loaded here -->
+    </div>
+  </div>
+</div>
+
+<script>
+  // API Base URL - Corrected to match your Spring Boot server
+  const API_BASE_URL = 'http://localhost:8080/api';
+
+  // Global variables
+  let currentPolicy = null;
+
+  // Initialize application
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log(' User Policy System initialized');
+    loadPolicies();
+  });
+
+  // Show policy section
+  function showPolicySection(sectionId) {
+    // Hide all sections
+    const sections = document.querySelectorAll('.policy-section');
+    sections.forEach(section => section.classList.remove('active'));
+
+    // Show selected section
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) {
+      targetSection.classList.add('active');
+    }
+
+    // Update sidebar navigation
+    const sidebarItems = document.querySelectorAll('.sidebar-item');
+    sidebarItems.forEach(item => item.classList.remove('active'));
+
+    if (event && event.target) {
+      event.target.classList.add('active');
+    }
+
+    // Load section-specific data
+    switch(sectionId) {
+      case 'browse-policies':
+        loadPolicies();
+        break;
+      case 'my-applications':
+        loadMyApplications();
+        break;
+    }
+  }
+
+  // ============ HEADER BUTTON FUNCTIONS ============
+
+  // Show dashboard function
+  function showDashboard() {
+    showAlert(' Dashboard functionality - redirecting to user dashboard...', 'success');
+    // You can add navigation logic here
+    // window.location.href = 'dashboard.html';
+  }
+
+  // Handle logout function
+  function handleLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+      showAlert(' Logging out... Goodbye!', 'success');
+      // Add logout logic here
+      setTimeout(() => {
+        // Redirect to login page or home page
+        window.location.href = 'index.html';
+      }, 1500);
+    }
+  }
+
+  // ============ API CORRECTED FUNCTIONS ============
+
+  // Load policies from backend - CORRECTED API PATH
+  async function loadPolicies() {
+    try {
+      showAlert('Loading policies...', 'success');
+      const response = await fetch(`${API_BASE_URL}/user-policies`); // CORRECT PATH
+      if (!response.ok) throw new Error(`HTTP ${response.status}: Failed to fetch policies`);
+
+      const policies = await response.json();
+      displayPolicies(policies);
+
+    } catch (error) {
+      showAlert(' Error loading policies: ' + error.message, 'error');
+      console.error('Error loading policies:', error);
+      displayFallbackPolicies();
+    }
+  }
+
+  // Display policies in the grid - CORRECTED VERSION
+  function displayPolicies(policies) {
+    const grid = document.getElementById('policiesGrid');
+    grid.innerHTML = '';
+
+    if (!policies || policies.length === 0) {
+      grid.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1 / -1;">No policies available at the moment.</p>';
+      return;
+    }
+
+    policies.forEach(policy => {
+      const policyCard = createPolicyCard(policy);
+      grid.appendChild(policyCard);
+    });
+  }
+
+  // Create policy card HTML - CORRECTED API VERSION
+  function createPolicyCard(policy) {
+    const card = document.createElement('div');
+    card.className = 'policy-card';
+
+    // Ensure benefits is an array - API safe
+    const benefits = Array.isArray(policy.benefits) ? policy.benefits : [];
+
+    card.innerHTML = `
+    <div class="policy-header">
+      <div class="policy-icon">${policy.icon || ''}</div>
+      <h3 class="policy-title">${policy.name}</h3>
+    </div>
+    <p class="policy-description">${policy.description}</p>
+    <div class="policy-benefits">
+      <h4>Key Benefits:</h4>
+      <ul class="benefits-list">
+        ${benefits.map(benefit => `<li>${benefit}</li>`).join('')}
+      </ul>
+    </div>
+    <div class="policy-actions">
+      <button class="btn-apply" onclick="openApplicationModal('${policy.name}', ${policy.id})"> Apply Now</button>
+      <button class="btn-download" onclick="downloadPolicy(${policy.id})"> Download</button>
+    </div>
+  `;
+    return card;
+  }
+
+  // Display fallback policies if API fails
+  function displayFallbackPolicies() {
+    const grid = document.getElementById('policiesGrid');
+    grid.innerHTML = `
+    <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; background: white; border-radius: 12px;">
+      <h3 style="color: #dc3545; margin-bottom: 1rem;"> Unable to load policies from server</h3>
+      <p style="color: #666; margin-bottom: 1rem;">Please check if your Spring Boot application is running on ${API_BASE_URL}</p>
+      <button class="btn btn-register" onclick="loadPolicies()"> Try Again</button>
+    </div>
+  `;
+  }
+
+  // Open application modal - CORRECTED VERSION
+  function openApplicationModal(policyName, policyId) {
+    // Ensure policyId is a number - CRITICAL FIX
+    const numericPolicyId = parseInt(policyId);
+    if (isNaN(numericPolicyId)) {
+      showAlert(' Invalid policy ID. Please refresh and try again.', 'error');
+      return;
+    }
+
+    currentPolicy = {
+      name: policyName,
+      id: numericPolicyId  // Store as number, not string - FIXED
+    };
+
+    document.getElementById('modalTitle').textContent = ` Apply for ${policyName}`;
+    showModal('applicationModal');
+  }
+
+  // Handle policy application form submission - CORRECTED API PATH
+  document.getElementById('policyApplicationForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    // Validate policy ID exists
+    if (!currentPolicy || !currentPolicy.id) {
+      showAlert(' No policy selected. Please refresh and try again.', 'error');
+      return;
+    }
+
+    const applicationData = {
+      policyId: currentPolicy.id, // This should now be a number - FIXED
+      applicantName: document.getElementById('applicantName').value.trim(),
+      age: parseInt(document.getElementById('applicantAge').value),
+      nic: document.getElementById('applicantNic').value.trim(),
+      address: document.getElementById('applicantAddress').value.trim(),
+      phone: document.getElementById('applicantPhone').value.trim(),
+      email: document.getElementById('applicantEmail').value.trim(),
+      vehicleDetails: document.getElementById('vehicleType').value.trim(),
+      additionalNotes: document.getElementById('additionalNotes').value.trim()
+    };
+
+    // Validate required fields
+    if (!applicationData.applicantName || !applicationData.nic || !applicationData.address) {
+      showAlert(' Please fill in all required fields.', 'error');
+      return;
+    }
+
+    try {
+      showAlert(' Submitting application...', 'success');
+
+      const response = await fetch(`${API_BASE_URL}/user-policies/applications`, { // CORRECT PATH
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(applicationData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP ${response.status}: Failed to submit application`);
+      }
+
+      const result = await response.json();
+      showAlert(' Application submitted successfully! You will receive a confirmation email shortly.', 'success');
+
+      closeModal('applicationModal');
+      this.reset();
+      loadMyApplications();
+
+    } catch (error) {
+      showAlert(' Error submitting application: ' + error.message, 'error');
+      console.error('Error submitting application:', error);
+    }
+  });
+
+  // Load user's applications - CORRECTED API PATH
+  async function loadMyApplications() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/admin-applications`); // CORRECT PATH
+      if (!response.ok) throw new Error('Failed to fetch applications');
+
+      const applications = await response.json();
+      displayMyApplications(applications);
+
+    } catch (error) {
+      console.error('Error loading applications:', error);
+      // Show fallback message
+      const tableBody = document.querySelector('#applicationsTable tbody');
+      if (tableBody) {
+        tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #666;">Unable to load applications. Please try again later.</td></tr>';
+      }
+    }
+  }
+
+  // Display user applications - CORRECTED VERSION
+  function displayMyApplications(applications) {
+    const tableBody = document.querySelector('#applicationsTable tbody');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = '';
+
+    if (!applications || applications.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #666;">No applications found</td></tr>';
+      return;
+    }
+
+    applications.forEach(app => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+      <td>${app.id || 'N/A'}</td>
+      <td>${app.policy ? app.policy.name : 'N/A'}</td>
+      <td>${app.vehicleDetails || 'N/A'}</td>
+      <td>${app.applicationDate || 'N/A'}</td>
+      <td><span class="status-badge status-${app.status ? app.status.toLowerCase() : 'pending'}">${getStatusIcon(app.status)} ${app.status || 'PENDING'}</span></td>
+      <td>
+        <button class="btn btn-register" onclick="viewApplication(${app.id})" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;"> View</button>
+      </td>
+    `;
+      tableBody.appendChild(row);
+    });
+  }
+
+  // Download policy document - CORRECTED API PATH
+  async function downloadPolicy(policyId) {
+    try {
+      showAlert(' Downloading policy document...', 'success');
+
+      const response = await fetch(`${API_BASE_URL}/user-policies/download/${policyId}`); // CORRECT PATH
+      if (!response.ok) throw new Error('Failed to download policy');
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `policy-${policyId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      showAlert(' Policy document downloaded successfully!', 'success');
+
+    } catch (error) {
+      showAlert(' Error downloading policy: ' + error.message, 'error');
+      console.error('Error downloading policy:', error);
+    }
+  }
+
+  // View application details - CORRECTED API PATH
+  async function viewApplication(applicationId) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/admin-applications/${applicationId}`); // CORRECT PATH
+      if (!response.ok) throw new Error('Failed to fetch application');
+
+      const app = await response.json();
+
+      const content = `
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+        <div><strong>Application ID:</strong> ${app.id}</div>
+        <div><strong>Status:</strong> <span class="status-badge status-${app.status ? app.status.toLowerCase() : 'pending'}">${getStatusIcon(app.status)} ${app.status || 'PENDING'}</span></div>
+        <div><strong>Applicant:</strong> ${app.applicantName}</div>
+        <div><strong>Policy:</strong> ${app.policy ? app.policy.name : 'N/A'}</div>
+        <div><strong>Vehicle:</strong> ${app.vehicleDetails || 'N/A'}</div>
+        <div><strong>Date:</strong> ${app.applicationDate || 'N/A'}</div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <h4 style="color: #4a69bd; margin-bottom: 0.5rem;">Contact Information</h4>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div><strong>Email:</strong> ${app.email || 'N/A'}</div>
+          <div><strong>Phone:</strong> ${app.phone || 'N/A'}</div>
+          <div><strong>NIC:</strong> ${app.nic || 'N/A'}</div>
+          <div><strong>Age:</strong> ${app.age || 'N/A'}</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 1rem;">
+        <strong>Address:</strong><br>
+        ${app.address || 'N/A'}
+      </div>
+
+      ${app.additionalNotes ? `
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="color: #4a69bd; margin-bottom: 0.5rem;">Additional Notes</h4>
+          <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+            ${app.additionalNotes}
+          </div>
+        </div>
+      ` : ''}
+    `;
+
+      document.getElementById('applicationDetailsContent').innerHTML = content;
+      showModal('viewApplicationModal');
+
+    } catch (error) {
+      showAlert(' Error loading application details: ' + error.message, 'error');
+      console.error('Error loading application details:', error);
+    }
+  }
+
+  // Refresh applications
+  async function refreshApplications() {
+    showAlert(' Refreshing applications...', 'success');
+    await loadMyApplications();
+  }
+
+  // ============ UTILITY FUNCTIONS ============
+
+  // Show alert message
+  function showAlert(message, type) {
+    const alertContainer = document.getElementById('alertContainer');
+    alertContainer.textContent = message;
+    alertContainer.className = `alert alert-${type} show`;
+
+    setTimeout(() => {
+      alertContainer.classList.remove('show');
+    }, 5000);
+  }
+
+  // Show modal
+  function showModal(modalId) {
+    document.getElementById(modalId).classList.add('show');
+  }
+
+  // Close modal
+  function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('show');
+  }
+
+  // Get status icon
+  function getStatusIcon(status) {
+    switch(status ? status.toUpperCase() : 'PENDING') {
+      case 'PENDING': return '';
+      case 'APPROVED': return '';
+      case 'REJECTED': return '';
+      case 'DUPLICATE': return '️';
+      default: return '';
+    }
+  }
+
+  // Close modals when clicking outside
+  window.addEventListener('click', function(event) {
+    if (event.target.classList.contains('modal')) {
+      event.target.classList.remove('show');
+    }
+  });
+
+  console.log(' User Policy System with Dashboard and Logout functionality loaded!');
+</script>
+</body>
+</html>

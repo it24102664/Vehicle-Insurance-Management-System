@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>User Registration - MotorCare LK</title>
+    <style>
+        /* Essential styles for the form and modal */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            margin: 0; padding: 0;
+        }
+
+        .modal {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+
+        .modal-header h2 {
+            color: #4a69bd;
+            margin: 0;
+        }
+
+        .close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        form > .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #4a69bd;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        small.form-helper {
+            font-size: 0.875rem;
+            color: #666;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            background: #4a69bd;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 1rem;
+        }
+
+        button[type="submit"]:hover {
+            background: #3c5aa6;
+        }
+    </style>
+</head>
+<body>
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2> Create Account</h2>
+            <button class="close" onclick="closeModal()">×</button>
+        </div>
+
+        <div id="registerAlert" class="alert"></div>
+
+        <form id="registerForm" novalidate>
+            <div class="form-group">
+                <label for="registerName"> Full Name</label>
+                <input type="text" id="registerName" required placeholder="Enter your full name" />
+            </div>
+
+            <div class="form-group">
+                <label for="registerAge"> Age</label>
+                <input type="number" id="registerAge" min="16" max="100" required placeholder="Your age" />
+            </div>
+
+            <div class="form-group">
+                <label for="registerNic"> NIC Number</label>
+                <input type="text" id="registerNic" required pattern="^[0-9]{12}$" placeholder="12 digit NIC number" />
+                <small class="form-helper">Enter your 12 digit NIC number (numbers only)</small>
+            </div>
+
+            <div class="form-group">
+                <label for="registerAddress"> Address</label>
+                <textarea id="registerAddress" required placeholder="Enter your complete address"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="registerPhone"> Phone Number</label>
+                <input type="tel" id="registerPhone" pattern="^[0-9]{10}$" required placeholder="e.g., 0771234567" />
+                <small class="form-helper">Enter 10 digit Sri Lankan phone number</small>
+            </div>
+
+            <div class="form-group">
+                <label for="registerEmail"> Email Address</label>
+                <input type="email" id="registerEmail" required placeholder="your.email@example.com" />
+            </div>
+
+            <div class="form-group">
+                <label for="registerPassword"> Password</label>
+                <input type="password" id="registerPassword" required placeholder="Password" />
+                <small class="form-helper">Create with Symbol,numbers, uppercase and lowercase</small>
+            </div>
+
+            <button type="submit" onclick="navigateToPage('userlogin.html')">🛡Register</button>
+
+            <script>
+                function navigateToPage(page) {
+                    window.location.href = page;
+                }
+            </script>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    const API_BASE_URL = 'http://localhost:8080/api';
+
+    function showAlert(message, type) {
+        const alert = document.getElementById('registerAlert');
+        alert.textContent = message;
+        alert.className = `alert alert-${type} show`;
+        setTimeout(() => {
+            alert.classList.remove('show');
+        }, 5000);
+    }
+
+    function clearAlerts() {
+        const alert = document.getElementById('registerAlert');
+        alert.classList.remove('show');
+    }
+
+    function closeModal() {
+        clearAlerts();
+        document.getElementById('registerModal').style.display = 'none';
+    }
+
+    function validatePassword(password) {
+        // Minimum 6 characters, with at least one uppercase, one lowercase, one number, one symbol
+        const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{6,}$/;
+        return pattern.test(password);
+    }
+
+    async function apiCall(endpoint, method='POST', data=null) {
+        const url = `${API_BASE_URL}${endpoint}`;
+        const options = {
+            method,
+            headers: {'Content-Type': 'application/json'}
+        };
+        if (data) options.body = JSON.stringify(data);
+        try {
+            const response = await fetch(url, options);
+            return await response.json();
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById('registerName').value.trim();
+        const age = parseInt(document.getElementById('registerAge').value);
+        const nic = document.getElementById('registerNic').value.trim();
+        const address = document.getElementById('registerAddress').value.trim();
+        const phone = document.getElementById('registerPhone').value.trim();
+        const email = document.getElementById('registerEmail').value.trim();
+        const password = document.getElementById('registerPassword').value;
+
+        // Validations
+        if (!validatePassword(password)) {
+            showAlert('Password must be at least 6 characters, include uppercase, lowercase, number, symbol.', 'error');
+            return;
+        }
+
+        const nicPattern = /^[0-9]{12}$/;
+        if (!nicPattern.test(nic)) {
+            showAlert('NIC must be exactly 12 numeric digits.', 'error');
+            return;
+        }
+
+        const phonePattern = /^[0-9]{10}$/;
+        if (!phonePattern.test(phone)) {
+            showAlert('Phone number must be 10 digits (Sri Lankan format).', 'error');
+            return;
+        }
+
+        // All validations passed, proceed with API call
+        const userData = {
+            name,
+            age,
+            nic,
+            address,
+            telephone: phone,
+            email,
+            password,
+        };
+        try {
+            const result = await apiCall('/user/register', 'POST', userData);
+            if (result.success) {
+                showAlert(result.message, 'success');
+                document.getElementById('registerForm').reset();
+                setTimeout(() => {
+                    closeModal();
+                }, 2000);
+            } else {
+                showAlert(result.message || 'Registration failed', 'error');
+            }
+        } catch (err) {
+            showAlert('Registration failed. Check your connection.', 'error');
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>User Login</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      width: 320px;
+    }
+    h2 {
+      color: #4a69bd;
+      margin-bottom: 1rem;
+    }
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      margin-bottom: 1.25rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #4a69bd;
+      color: white;
+      font-weight: 700;
+      border: none;
+      border-radius: 25px;
+      width: 100%;
+      padding: 0.75rem;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button:hover {
+      background: #3c5aa6;
+    }
+    .alert {
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      color: white;
+      display: none;
+    }
+    .alert.error {
+      background: #ef4444;
+    }
+    .alert.success {
+      background: #10b981;
+    }
+  </style>
+</head>
+<body>
+<div class="login-container">
+  <h2>User Login</h2>
+  <div id="alert" class="alert"></div>
+  <form id="loginForm">
+    <label for="email">Email</label>
+    <input id="email" type="email" required placeholder="Enter email" />
+    <label for="password">Password</label>
+    <input id="password" type="password" required placeholder="Enter password" />
+    <button type="submit">Login</button>
+  </form>
+</div>
+
+<script>
+  const API_BASE_URL = 'http://localhost:8080/api';
+
+  const alertDiv = document.getElementById('alert');
+
+  function showAlert(message, type='error') {
+    alertDiv.textContent = message;
+    alertDiv.className = 'alert ' + type;
+    alertDiv.style.display = 'block';
+  }
+
+  async function apiCall(path, method, data) {
+    const response = await fetch(API_BASE_URL + path, {
+      method,
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    return await response.json();
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    alertDiv.style.display = 'none';
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    try {
+      const result = await apiCall('/user/login', 'POST', {email, password});
+      if (result.success) {
+        localStorage.setItem('loggedInUser', JSON.stringify(result.user));
+        showAlert('Login successful! Redirecting...', 'success');
+        setTimeout(() => {
+          window.location.href = 'userdashboard.html';
+        }, 1000);
+      } else {
+        showAlert(result.message || 'Login failed');
+      }
+    } catch (error) {
+      showAlert('Error connecting to server.');
+    }
+  });
+</script>
+</body>
+</html>

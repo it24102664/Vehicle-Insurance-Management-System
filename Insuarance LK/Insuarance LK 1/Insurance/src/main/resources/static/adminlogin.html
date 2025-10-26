@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Login - MotorCare LK</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8f9fa; color: #333; margin: 0; padding: 0;
+    }
+    .modal {
+      display: flex; align-items: center; justify-content: center;
+      position: fixed; z-index: 2000; left: 0; top: 0;
+      width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+      background: white; padding: 2rem; border-radius: 15px;
+      width: 90%; max-width: 400px; position: relative;
+    }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;
+    }
+    .modal-header h2 {
+      color: #ff6b35; margin: 0;
+    }
+    .close {
+      background: none; border: none; font-size: 1.5rem;
+      cursor: pointer; color: #666;
+    }
+    .close:hover {
+      color: #333;
+    }
+    .alert {
+      padding: 1rem; border-radius: 8px; margin-bottom: 1rem;
+      display: none;
+    }
+    .alert.show {
+      display: block;
+    }
+    .alert-success {
+      background: #d1fae5; color: #065f46; border: 1px solid #10b981;
+    }
+    .alert-error {
+      background: #fee2e2; color: #991b1b; border: 1px solid #ef4444;
+    }
+    form > .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block; font-weight: 600; margin-bottom: 0.25rem;
+    }
+    input {
+      width: 100%; padding: 0.75rem; border: 2px solid #ddd;
+      border-radius: 8px; font-size: 1rem; font-family: inherit;
+      transition: border-color 0.3s; box-sizing: border-box;
+    }
+    input:focus {
+      outline: none; border-color: #ff6b35;
+    }
+    button[type="submit"] {
+      width: 100%; background: #ff6b35; color: white; border: none;
+      border-radius: 25px; font-weight: 600; padding: 0.75rem;
+      cursor: pointer; transition: background 0.3s; font-size: 1rem;
+    }
+    button[type="submit"]:hover {
+      background: #e55a2b;
+    }
+  </style>
+</head>
+<body>
+<div id="adminLoginModal" class="modal" style="display: flex;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>🛡️ Admin Login</h2>
+      <button class="close" onclick="closeModal()">×</button>
+    </div>
+    <div id="adminLoginAlert" class="alert"></div>
+    <form id="adminLoginForm">
+      <div class="form-group">
+        <label for="adminEmail">📧 Admin Email</label>
+        <input type="email" id="adminEmail" required placeholder="Enter admin email" />
+      </div>
+      <div class="form-group">
+        <label for="adminPassword">🔒 Admin Password</label>
+        <input type="password" id="adminPassword" required placeholder="Enter admin password" />
+      </div>
+      <button type="submit" onclick="navigateToPage('admindashboard.html')">Admin Login</button>
+      <script>
+        function navigateToPage(page) {
+          window.location.href = page;
+        }
+      </script>
+    </form>
+  </div>
+</div>
+<script>
+  const API_BASE_URL = 'http://localhost:8080/api';
+
+  function closeModal() {
+    document.getElementById('adminLoginModal').style.display = 'none';
+  }
+
+  function showAlert(message, type) {
+    const alertDiv = document.getElementById('adminLoginAlert');
+    alertDiv.textContent = message;
+    alertDiv.className = `alert alert-${type} show`;
+    setTimeout(() => alertDiv.classList.remove('show'), 5000);
+  }
+
+  async function apiCall(endpoint, method = 'POST', data=null) {
+    const options = { method, headers:{'Content-Type':'application/json'} };
+    if (data) options.body = JSON.stringify(data);
+    const response = await fetch(API_BASE_URL + endpoint, options);
+    return response.json();
+  }
+
+  document.getElementById('adminLoginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = document.getElementById('adminEmail').value.trim();
+    const password = document.getElementById('adminPassword').value;
+
+    try {
+      const result = await apiCall('/admin/login', 'POST', { email, password });
+      if (result.success) {
+        showAlert(result.message, 'success');
+        setTimeout(() => {
+          closeModal();
+          // redirect or load admin dashboard here
+        }, 1500);
+      } else {
+        showAlert(result.message || 'Invalid credentials', 'error');
+      }
+    } catch(err) {
+      showAlert('Login failed. Check connection.', 'error');
+    }
+  });
+</script>
+</body>
+</html>
